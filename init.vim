@@ -8,5 +8,5 @@ Plug 'junegunn/fzf'
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
 
-lua require('config')
+lua require('nvim-tree-config')
 
