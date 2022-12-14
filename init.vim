@@ -1,7 +1,8 @@
 " Plugins will be downloaded under the specified directory.
 call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
 Plug 'preservim/nerdtree'
-Plug 'junegunn/fzf'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'akinsho/bufferline.nvim', { 'tag': 'v3.*' }
 Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
 Plug 'ryanoasis/vim-devicons'
@@ -12,6 +13,8 @@ Plug 'petertriho/nvim-scrollbar'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'stsewd/fzf-checkout.vim'
+Plug 'jparise/vim-graphql'
+Plug 'tveskag/nvim-blame-line'
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
 
@@ -20,8 +23,8 @@ lua require("scrollbar").setup()
 lua require('gitsigns').setup()
 lua require('coc-config')
 lua require("bufferline-config")
+lua require('telescope-config')
 lua require('lualine').setup()
-
 " Source additional .vim files
 let home = expand('~')
 exec 'source' home . '/.config/nvim/vim_files/surround.vim'
@@ -57,6 +60,9 @@ let NERDTreeShowHidden=1
 " Symbol renaming.
 nmap <leader>rn <Plug>(coc-rename)
 
+" Autocommands
+autocmd FocusLost * silent! wa
+
 " Allow system clipboard
 set clipboard+=unnamedplus
 
@@ -66,6 +72,10 @@ nmap <leader>z :u<CR>
 nmap <leader>Q :qa!<CR>
 nmap <leader>q :bw<CR>
 nmap <leader>. :NERDTreeFind<CR>
+vnoremap <leader>jf :!jq .<CR>
+
+" Unmaps of preexisting commands
+nnoremap J <Nop>
 
 " Faster navigation with arrows
 nnoremap <C-k> 5k
@@ -78,7 +88,9 @@ imap jj <Esc>
 
 " Telescope remaps
 nnoremap <leader>ff <cmd>Telescope find_files<CR>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<CR>
+nnoremap <leader>fb <cmd>Telescope buffers<CR>
+nnoremap <leader>fo <cmd>lua require'telescope.builtin'.oldfiles{}<CR>
 
 " Buffer navigation remaps
 " toggle buffer (switch between current and last buffer)
@@ -105,4 +117,5 @@ nnoremap <silent> <leader>bv :vnew<CR>
 
 " FZF git branch select
 let g:fzf_checkout_git_options = '--sort=-committerdate'
-nnoremap <leader>gb :GBranches checkout --locals<CR> 
+noremap <leader>gb :GBranches checkout --locals<CR>
+nnoremap <leader>gg :ToggleBlameLine<CR>
